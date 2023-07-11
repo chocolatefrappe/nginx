@@ -1,6 +1,9 @@
 variable "NGINX_VERSION" {
     default = "stable-alpine"
 }
+variable "S6_OVERLAY_VERSION" {
+    default = "v3.1.5.0"
+}
 
 target "docker-metadata-action" {}
 
