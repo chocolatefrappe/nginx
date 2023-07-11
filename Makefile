@@ -14,4 +14,6 @@ run:
 .PHONY: test
 test:
 	cd test && \
+	test -f dhparam.pem || \
+		openssl dhparam -out dhparam.pem 2048 && \
 	docker compose up

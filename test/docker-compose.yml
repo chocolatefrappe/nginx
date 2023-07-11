@@ -7,3 +7,4 @@ services:
     volumes:
       - ./templates:/etc/nginx/templates
       - ./ssl:/etc/nginx/ssl
+      - ./dhparam.pem:/etc/nginx/dhparam.pem
