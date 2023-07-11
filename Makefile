@@ -10,3 +10,8 @@ build:
 
 run:
 	docker run -it --rm -p 8080:80 $(DOCKER_META_IMAGES):$(DOCKER_META_VERSION)
+
+.PHONY: test
+test:
+	cd test && \
+	docker compose up

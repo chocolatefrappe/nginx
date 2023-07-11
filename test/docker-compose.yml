@@ -1,0 +1,11 @@
+services:
+  proxy:
+    image: nginx-reverse-proxy:local
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - ./ssl:/etc/nginx/ssl
+  frontend:
+    image: nginx:stable-alpine
