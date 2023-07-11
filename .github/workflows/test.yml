@@ -1,0 +1,51 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - stable
+          - stable-alpine
+          - mainline
+          - mainline-alpine
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: chocolatefrappe/nginx-reverse-proxy
+          tags: type=raw,value=${{ matrix.version }}
+
+      - name: Build and push
+        uses: docker/bake-action@v3
+        env:
+          NGINX_VERSION: ${{ matrix.version }}
+        with:
+          files: |
+            docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          push: false
