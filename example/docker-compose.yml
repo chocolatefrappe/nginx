@@ -1,6 +1,6 @@
 services:
   proxy:
-    image: nginx:stable-alpine
+    image: nginx-reverse-proxy:local
     ports:
       - 80:80
       - 443:443

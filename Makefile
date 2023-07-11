@@ -9,4 +9,4 @@ build:
 		docker buildx bake $(DOCKER_BAKE_FILE) $(DOCKER_BAKE_TARGET)
 
 run:
-	docker run -it --rm -p 8080:8080 $(DOCKER_META_IMAGES):$(DOCKER_META_VERSION)
+	docker run -it --rm -p 8080:80 $(DOCKER_META_IMAGES):$(DOCKER_META_VERSION)

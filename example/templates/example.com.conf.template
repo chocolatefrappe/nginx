@@ -1,0 +1,23 @@
+server {
+    listen      80;
+    listen      [::]:80;
+    server_name example.com;
+    root        /var/www/example.com/public;
+
+    # security
+    include     nginxconfig.io/security.conf;
+
+    # logging
+    access_log  /var/log/nginx/access.log combined buffer=512k flush=1m;
+    error_log   /var/log/nginx/error.log warn;
+
+    # reverse proxy
+    location / {
+        proxy_pass            http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        include               nginxconfig.io/proxy.conf;
+    }
+
+    # additional config
+    include nginxconfig.io/general.conf;
+}
