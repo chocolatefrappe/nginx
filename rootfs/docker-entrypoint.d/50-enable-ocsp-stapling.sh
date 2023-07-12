@@ -20,12 +20,12 @@ touch /etc/nginx/nginx.conf 2>/dev/null || { echo >&2 "$ME: error: can not modif
 
 # check if the file is already modified, e.g. on a container restart
 {
-    grep -q "ssl_stapling           on;" /etc/nginx/nginx.conf && { entrypoint_log "$ME: info: ssl_stapling already enabled"; exit 0; }
+    grep -q "ssl_stapling           on;" /etc/nginx/nginx.conf && { entrypoint_log "$ME: info: ssl_stapling already enabled"; return 0; }
     sed -i -E 's,ssl_stapling           off;,ssl_stapling           on;,' /etc/nginx/nginx.conf
+    entrypoint_log "$ME: info: Enabled ssl_stapling in /etc/nginx/nginx.conf"
 }
 {
-    grep -q "ssl_stapling_verify    on;" /etc/nginx/nginx.conf && { entrypoint_log "$ME: info: ssl_stapling_verify already enabled"; exit 0; }
+    grep -q "ssl_stapling_verify    on;" /etc/nginx/nginx.conf && { entrypoint_log "$ME: info: ssl_stapling_verify already enabled"; return 0; }
     sed -i -E 's,ssl_stapling_verify    off;,ssl_stapling_verify    on;,' /etc/nginx/nginx.conf
+    entrypoint_log "$ME: info: Enabled ssl_stapling_verify in /etc/nginx/nginx.conf"
 }
-
-entrypoint_log "$ME: info: Enabled ssl_stapling and ssl_stapling_verify in /etc/nginx/nginx.conf"
