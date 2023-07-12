@@ -13,36 +13,64 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  alpine:
     runs-on: ubuntu-latest
     # continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
         version:
-          - stable-alpine
-          - mainline-alpine
+          - stable
+          - mainline
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: chocolatefrappe/nginx
+          tags: type=raw,value=${{ matrix.version }}-alpine
+      - name: Build and push
+        uses: docker/bake-action@v3
+        env:
+          NGINX_VERSION: ${{ matrix.version }}-alpine
+        with:
+          targets: alpine
+          files: |
+            docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          push: false
+  debian:
+    runs-on: ubuntu-latest
+    # continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - stable
+          - mainline
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: chocolatefrappe/nginx
           tags: type=raw,value=${{ matrix.version }}
-
       - name: Build and push
         uses: docker/bake-action@v3
         env:
           NGINX_VERSION: ${{ matrix.version }}
         with:
+          targets: debian
           files: |
             docker-bake.hcl
             ${{ steps.meta.outputs.bake-file }}
