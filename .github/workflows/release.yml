@@ -42,7 +42,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: chocolatefrappe/nginx-reverse-proxy
+          images: chocolatefrappe/nginx
           tags: type=raw,value=${{ matrix.version }}
 
       - name: Build and push
