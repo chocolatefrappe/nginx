@@ -23,4 +23,4 @@ grep -q "# ssl_dhparam" /etc/nginx/nginx.conf || { entrypoint_log "$ME: info: ss
 
 # enable ssl_dhparam on /etc/nginx/nginx.conf
 sed -i -E 's,# ssl_dhparam,ssl_dhparam,' /etc/nginx/nginx.conf
-entrypoint_log "$ME: info: Enabled ssl_dhparam /etc/nginx/nginx.conf"
+entrypoint_log "$ME: info: Enabled ssl_dhparam in /etc/nginx/nginx.conf"
