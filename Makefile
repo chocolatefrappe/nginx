@@ -1,7 +1,7 @@
 DOCKER_BAKE_FILE := -f Makefile.docker-bake.hcl
 DOCKER_BAKE_TARGET := default
 
-DOCKER_META_IMAGES := nginx-reverse-proxy
+DOCKER_META_IMAGES := chocolatefrappe/nginx
 DOCKER_META_VERSION := local
 
 build:
