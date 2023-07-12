@@ -8,9 +8,10 @@ ME=$(basename "${0}")
 DHPARAM_FILE="${DHPARAM_FILE:-/etc/nginx/dhparam.pem}"
 DHPARAM_KEY_BITS=${DHPARAM_KEY_BITS:-2048}
 
+echo -n "$ME: Generating DH parameters, ${DHPARAM_KEY_BITS} bit long safe prime..."
 if [ ! -f "${DHPARAM_FILE}" ]; then
-    echo -n "$ME: Generating DH parameters, ${DHPARAM_KEY_BITS} bit long safe prime..."
     openssl dhparam -out "${DHPARAM_FILE}" ${DHPARAM_KEY_BITS} 2> /dev/null
+    echo " [DONE]"
 else
-    echo "$ME: Using existing DH parameters!"
+    echo " [SKIP]"
 fi
