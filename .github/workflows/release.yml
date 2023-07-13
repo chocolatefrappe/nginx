@@ -43,7 +43,7 @@ jobs:
       - name: Build and push
         uses: docker/bake-action@v3
         env:
-          NGINX_VERSION: ${{ matrix.version }}-alpine
+          NGINX_VERSION: ${{ matrix.version }}
         with:
           targets: alpine
           files: |
