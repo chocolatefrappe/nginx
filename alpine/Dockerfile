@@ -8,3 +8,6 @@ RUN apk add -Uu --no-cache \
     ca-certificates
 
 ADD rootfs /
+
+ENV SSL_DHPARAM_ENABLED=true \
+    OCSP_STAPLING_ENABLED=true
