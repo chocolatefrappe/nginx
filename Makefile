@@ -1,5 +1,5 @@
 DOCKER_BAKE_FILE := -f Makefile.docker-bake.hcl
-DOCKER_BAKE_TARGET := default
+DOCKER_BAKE_TARGET := alpine
 
 DOCKER_META_IMAGES := chocolatefrappe/nginx
 DOCKER_META_VERSION := local

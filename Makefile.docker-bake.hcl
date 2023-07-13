@@ -8,6 +8,7 @@ variable "S6_OVERLAY_VERSION" {
 group "default" {
     targets = [
         "alpine",
+        "debian",
     ]
 }
 
