@@ -1,8 +1,14 @@
 variable "NGINX_VERSION" {
-    default = "stable-alpine"
+    default = "stable"
 }
 variable "S6_OVERLAY_VERSION" {
     default = "v3.1.5.0"
+}
+
+group "default" {
+    targets = [
+        "alpine",
+    ]
 }
 
 variable "DOCKER_META_IMAGES" {}
@@ -14,9 +20,7 @@ target "docker-metadata-action" {
     ]
 }
 
-target "default" {
-    inherits = ["docker-metadata-action"]
-    dockerfile = "Dockerfile"
+target "default-template" {
     context = "."
     args = {
         NGINX_VERSION = "${NGINX_VERSION}"
@@ -24,4 +28,14 @@ target "default" {
         S6_VERBOSITY = "2"
         S6_BEHAVIOUR_IF_STAGE2_FAILS = "0"
     }
+}
+
+target "alpine" {
+    inherits = ["docker-metadata-action", "default-template"]
+    dockerfile = "alpine/Dockerfile"
+}
+
+target "debian" {
+    inherits = ["docker-metadata-action", "default-template"]
+    dockerfile = "debian/Dockerfile"
 }
