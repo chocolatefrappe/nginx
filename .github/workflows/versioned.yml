@@ -1,0 +1,106 @@
+name: Release versioned
+
+on:
+  push:
+    branches:
+      - v1
+
+  # Build daily on 00:00 UTC
+  schedule:
+    - cron: '0 0 * * SUN'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - id: today
+        uses: actions-matrix/today@main
+      - id: release
+        uses: actions-matrix/release-matrix-action@v1
+        with:
+          search: "nginx"
+          date: ${{ steps.today.outputs.year }}
+    outputs:
+      matrix: ${{ steps.release.outputs.matrix }}
+
+  alpine:
+    runs-on: ubuntu-latest
+    # continue-on-error: true
+    needs: generate
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: chocolatefrappe/nginx
+          tags: |
+            type=semver,pattern={{version}},value=${{ matrix.version }}-alpine
+            type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}-alpine
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/bake-action@v3
+        env:
+          NGINX_VERSION: ${{ matrix.version }}
+        with:
+          targets: alpine
+          files: |
+            docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          push: ${{ github.event_name != 'pull_request' }}
+      - name: Docker Metadata Summary
+        uses: dockerbakery/docker-metadata-summary@v1
+
+  debian:
+    runs-on: ubuntu-latest
+    # continue-on-error: true
+    needs: generate
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: chocolatefrappe/nginx
+          tags: |
+            type=semver,pattern={{version}},value=${{ matrix.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/bake-action@v3
+        env:
+          NGINX_VERSION: ${{ matrix.version }}
+        with:
+          targets: debian
+          files: |
+            docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          push: ${{ github.event_name != 'pull_request' }}
+      - name: Docker Metadata Summary
+        uses: dockerbakery/docker-metadata-summary@v1
