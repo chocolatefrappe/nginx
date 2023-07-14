@@ -14,9 +14,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No need to do anything here"
+
   alpine:
     runs-on: ubuntu-latest
     # continue-on-error: true
+    needs: generate
     strategy:
       fail-fast: false
       matrix:
@@ -56,6 +62,7 @@ jobs:
   debian:
     runs-on: ubuntu-latest
     # continue-on-error: true
+    needs: generate
     strategy:
       fail-fast: false
       matrix:
