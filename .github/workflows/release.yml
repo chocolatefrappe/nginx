@@ -11,7 +11,7 @@ on:
 
 jobs:
   canonical:
-    uses: .github/workflows/canonical.yml
+    uses: ./.github/workflows/canonical.yml
 
   versioned:
-    uses: .github/workflows/versioned.yml
+    uses: ./.github/workflows/versioned.yml
