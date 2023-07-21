@@ -15,9 +15,9 @@ concurrency:
 
 jobs:
   canonical:
-    uses: ./.github/workflows/canonical.yml
+    uses: ./.github/workflows/release-canonical.yml
     secrets: inherit
 
   versioned:
-    uses: ./.github/workflows/versioned.yml
+    uses: ./.github/workflows/release-versioned.yml
     secrets: inherit
