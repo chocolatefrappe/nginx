@@ -12,6 +12,8 @@ on:
 jobs:
   canonical:
     uses: ./.github/workflows/canonical.yml
+    secrets: inherit
 
   versioned:
     uses: ./.github/workflows/versioned.yml
+    secrets: inherit
