@@ -10,12 +10,12 @@ jobs:
       - id: today
         uses: actions-matrix/today@main
       - id: release
-        uses: actions-matrix/release-matrix-action@v1
+        uses: actions-matrix/release-matrix-action@v2
         with:
           search: "nginx"
-          date: ${{ steps.today.outputs.year }}
+          date: ">=${{ steps.today.outputs.year }}"
     outputs:
-      matrix: ${{ steps.release.outputs.matrix }}
+      versions: ${{ steps.release.outputs.versions }}
 
   alpine:
     runs-on: ubuntu-latest
@@ -23,7 +23,8 @@ jobs:
     needs: generate
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.generate.outputs.matrix) }}
+      matrix:
+        version: ${{ fromJson(needs.generate.outputs.versions) }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
@@ -63,7 +64,8 @@ jobs:
     needs: generate
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.generate.outputs.matrix) }}
+      matrix:
+        version: ${{ fromJson(needs.generate.outputs.versions) }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
