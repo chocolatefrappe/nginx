@@ -10,7 +10,7 @@ build:
 		docker buildx bake $(DOCKER_BAKE_FILE) $(DOCKER_BAKE_TARGET)
 
 run:
-	docker run -it --rm -p 8080:8080 $(DOCKER_META_IMAGES):$(DOCKER_META_VERSION)
+	docker run -it --rm -p 8082:8080 -e CLOUDFLARE_ENABLED=true $(DOCKER_META_IMAGES):$(DOCKER_META_VERSION)
 
 .PHONY: test
 test:
