@@ -1,9 +1,6 @@
 variable "NGINX_VERSION" {
     default = "stable"
 }
-variable "S6_OVERLAY_VERSION" {
-    default = "v3.1.5.0"
-}
 
 group "default" {
     targets = [
@@ -18,7 +15,6 @@ target "default-template" {
     context = "."
     args = {
         NGINX_VERSION = "${NGINX_VERSION}"
-        S6_OVERLAY_VERSION = "${S6_OVERLAY_VERSION}"
     }
     platforms = [
         "linux/amd64",
