@@ -8,7 +8,7 @@ entrypoint_log() {
 }
 
 ME=$(basename "${0}")
-OCSP_STAPLING_ENABLED=${OCSP_STAPLING_ENABLED:-true}
+OCSP_STAPLING_ENABLED=${OCSP_STAPLING_ENABLED:-false}
 
 if [ "${OCSP_STAPLING_ENABLED}" != "true" ]; then
     entrypoint_log "$ME: info: OCSP_STAPLING_ENABLED is not true, skipping"

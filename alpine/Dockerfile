@@ -1,4 +1,6 @@
 ARG NGINX_VERSION=stable
+
+FROM ghcr.io/socheatsok78-lab/openssl-dhparam:latest AS openssl-dhparam
 FROM nginx:${NGINX_VERSION}-alpine
 
 RUN apk add -Uu --no-cache \
@@ -8,6 +10,4 @@ RUN apk add -Uu --no-cache \
     ca-certificates
 
 ADD rootfs /
-
-ENV SSL_DHPARAM_ENABLED=true \
-    OCSP_STAPLING_ENABLED=true
+COPY --from=openssl-dhparam --link /dhparam.pem /etc/nginx/dhparam.pem

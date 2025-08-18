@@ -1,20 +1,15 @@
-DOCKER_BAKE_FILE := -f Makefile.docker-bake.hcl
+DOCKER_BAKE_FILE := -f docker-bake.hcl -f hacks/docker-metadata-action.hcl
 DOCKER_BAKE_TARGET := alpine
 
+.EXPORT_ALL_VARIABLES:
 DOCKER_META_IMAGES := chocolatefrappe/nginx
 DOCKER_META_VERSION := local
 
-build:
-	chmod +x rootfs/docker-entrypoint.d/*.sh
-	DOCKER_META_IMAGES=$(DOCKER_META_IMAGES) DOCKER_META_VERSION=$(DOCKER_META_VERSION) \
-		docker buildx bake $(DOCKER_BAKE_FILE) $(DOCKER_BAKE_TARGET)
+print:
+	docker buildx bake $(DOCKER_BAKE_FILE) $(DOCKER_BAKE_TARGET) --print
 
-run:
-	docker run -it --rm -p 8082:8080 -e CLOUDFLARE_ENABLED=true $(DOCKER_META_IMAGES):$(DOCKER_META_VERSION)
+build: rootfs/etc/nginx/conf-available.d/cloudflare.conf
+	docker buildx bake $(DOCKER_BAKE_FILE) $(DOCKER_BAKE_TARGET) --load --set="*.platform="
 
-.PHONY: test
-test:
-	cd test && \
-	test -f dhparam.pem || \
-		openssl dhparam -out dhparam.pem 2048 && \
-	docker compose up
+rootfs/etc/nginx/conf-available.d/cloudflare.conf:
+	bash scripts/generate-cloudflare-config.sh > rootfs/etc/nginx/conf-available.d/cloudflare.conf

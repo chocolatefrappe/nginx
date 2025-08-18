@@ -8,7 +8,7 @@ entrypoint_log() {
 }
 
 ME=$(basename "${0}")
-SSL_DHPARAM_ENABLED=${SSL_DHPARAM_ENABLED:-true}
+SSL_DHPARAM_ENABLED=${SSL_DHPARAM_ENABLED:-false}
 
 if [ "${SSL_DHPARAM_ENABLED}" != "true" ]; then
     entrypoint_log "$ME: info: SSL_DHPARAM_ENABLED is not true, skipping"
@@ -30,8 +30,8 @@ sed -i -E 's,# ssl_dhparam,ssl_dhparam,' /etc/nginx/nginx.conf
 SSL_DHPARAM_FILE="${SSL_DHPARAM_FILE:-/etc/nginx/dhparam.pem}"
 SSL_DHPARAM_KEY_BITS=${SSL_DHPARAM_KEY_BITS:-2048}
 
-echo "$ME: Generating DH parameters, ${SSL_DHPARAM_KEY_BITS} bit long safe prime. This will take some time..."
 if [ ! -f "${SSL_DHPARAM_FILE}" ]; then
+    echo "$ME: Generating DH parameters, ${SSL_DHPARAM_KEY_BITS} bit long safe prime. This will take some time..."
     openssl dhparam -out "${SSL_DHPARAM_FILE}" ${SSL_DHPARAM_KEY_BITS} 2> /dev/null
 fi
 

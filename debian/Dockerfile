@@ -1,4 +1,6 @@
 ARG NGINX_VERSION=stable
+
+FROM ghcr.io/socheatsok78-lab/openssl-dhparam:latest AS openssl-dhparam
 FROM nginx:${NGINX_VERSION}
 
 RUN apt-get update && apt-get install -y \
@@ -9,6 +11,4 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 ADD rootfs /
-
-ENV SSL_DHPARAM_ENABLED=true \
-    OCSP_STAPLING_ENABLED=true
+COPY --from=openssl-dhparam --link /dhparam.pem /etc/nginx/dhparam.pem
